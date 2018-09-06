@@ -10,6 +10,11 @@ with open('1.cpp', 'r') as f:
     
 words = []
 lines = sample.split("\n")
+for i in lines:
+    for j in range(0, len(i)):
+        if i[j] == "/" and i[j+1] == "/":
+            lines.remove(i)
+            
 for word in lines:
     words.append(word.split(" "))
     if word.split("(") not in words:
