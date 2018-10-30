@@ -4,3 +4,6 @@ plotly
 termcolor
 twython
 colorama
+flask_session
+passlib
+tempfile
