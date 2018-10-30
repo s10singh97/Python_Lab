@@ -30,7 +30,9 @@ Session(app)
 def index():
     return render_template("index.html")
 
+
 @app.route("/search")
+@login_required
 def search():
 
     # validate screen_name
@@ -60,6 +62,7 @@ def search():
 
     # render results
     return render_template("search.html", chart=chart, screen_name=screen_name)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -99,6 +102,7 @@ def login():
     else:
         return render_template("login.html")
 
+
 @app.route("/logout")
 def logout():
     """Log user out."""
@@ -108,3 +112,40 @@ def logout():
 
     # redirect user to login form
     return redirect(url_for("login"))
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user."""
+    
+    if request.method == "POST":
+        
+        # ensure username was submitted
+        if not request.form.get("username"):
+            return apology("Must provide username")
+            
+        # ensure password was submitted    
+        elif not request.form.get("password"):
+            return apology("Must provide password")
+        
+        # ensure password and verified password is the same
+        elif request.form.get("password") != request.form.get("passwordagain"):
+            return apology("password doesn't match")
+        
+        # insert the new user into users, storing the hash of the user's password
+        result = db.execute("INSERT INTO users (username, hash) \
+                             VALUES(:username, :hash)", \
+                             username=request.form.get("username"), \
+                             hash=pwd_context.hash(request.form.get("password")))
+                 
+        if not result:
+            return apology("Username already exist")
+        
+        # remember which user has logged in
+        session["user_id"] = result
+
+        flash("Registered!")
+        # redirect user to home page
+        return redirect(url_for("index"))
+    
+    else:
+        return render_template("register.html")
