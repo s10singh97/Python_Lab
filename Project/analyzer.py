@@ -39,3 +39,7 @@ class Analyzer():
                 c += 0
 
         return c
+
+    def show(self):
+        print(self.positives)
+        print(self.negatives)
