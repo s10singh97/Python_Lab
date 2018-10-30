@@ -7,7 +7,7 @@ import colorama
 colorama.init()
 
 if len(sys.argv) != 2:
-    sys.exit("Usage: python tweets.py @screen_name")
+    sys.exit("Usage: python tweets.py twitter_handle")
 
 app = sys.argv[1]
 
