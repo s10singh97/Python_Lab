@@ -2,7 +2,9 @@ import os
 import sys
 
 from analyzer import Analyzer
-from termcolor import colored
+from termcolor import *
+import colorama
+colorama.init()
 
 def main():
 
@@ -20,11 +22,11 @@ def main():
     # analyze word
     score = analyzer.analyze(sys.argv[1])
     if score > 0.0:
-        print(colored(":)", "green"))
+        cprint(":)", "green")
     elif score < 0.0:
-        print(colored(":(", "red"))
+        cprint(":(", "red")
     else:
-        print(colored(":|", "yellow"))
+        cprint(":|", "yellow")
 
 if __name__ == "__main__":
     main()
