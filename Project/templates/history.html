@@ -7,16 +7,18 @@
 {% block main %}
     <table class="table table-striped" style="width:100%">
       <tr>
-        <th>Symbol</th>
-        <th>Shares</th>
-        <th>Price</th>
+        <th>Twitter Handle</th>
+        <th>Positive Score</th>
+        <th>Negative Score</th>
+        <th>Neutral Score</th>
         <th>Transacted</th>
       </tr>
     {% for history in histories %}
       <tr>
-        <td>{{ history.symbol }}</td>
-        <td>{{ history.shares }}</td>
-        <td>{{ history.price }}</td> 
+        <td>{{ history.screenname }}</td>
+        <td>{{ history.positive }}</td>
+        <td>{{ history.negative }}</td>
+        <td>{{ history.neutral }}</td> 
         <td>{{ history.transacted }}</td>
       </tr>
     {% endfor %}
