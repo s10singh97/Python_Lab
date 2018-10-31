@@ -56,15 +56,6 @@ def chart(positive, negative, neutral):
         ],
         "layout": {
             "showlegend": True,
-            "annotations": [
-                {
-                    "font": {
-                        "size": 20
-                    },
-                    "showarrow": False,
-                    "x": 0.20,
-                    "y": 0.5
-                }]
             }
     }
     return plotly.offline.plot(figure, output_type="div", show_link=False, link_text=False)
