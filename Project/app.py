@@ -185,3 +185,12 @@ def passwordchange():
 
     else:
         return render_template("passwordchange.html")
+
+
+@app.route("/history")
+@login_required
+def history():
+    """Show history of transactions."""
+    histories = db.execute("SELECT * from histories WHERE id=:id", id=session["user_id"])
+    
+    return render_template("history.html", histories=histories)
