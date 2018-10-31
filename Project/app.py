@@ -5,6 +5,7 @@ from cs50 import SQL
 from tempfile import gettempdir
 
 import helpers
+from helpers import *
 from analyzer import Analyzer
 
 # configure application
