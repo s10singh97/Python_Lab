@@ -6,5 +6,4 @@ twython
 colorama
 flask_session
 passlib
-tempfile
 cs50
