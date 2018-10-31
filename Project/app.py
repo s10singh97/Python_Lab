@@ -32,12 +32,15 @@ db = SQL("sqlite:///sentiments.db")
 @app.route("/")
 @login_required
 def index():
+    """Index Page"""
+
     return render_template("index.html")
 
 
 @app.route("/search")
 @login_required
 def search():
+    """Analyze the Twitter Handle"""
 
     # validate screen_name
     screen_name = request.args.get("screen_name", "")
@@ -164,6 +167,8 @@ def register():
 @app.route("/passwordchange", methods=["GET", "POST"])
 @login_required
 def passwordchange():
+    """Password Change"""
+
     if request.method == "POST":
 
         # ensure password was submitted
@@ -191,7 +196,8 @@ def passwordchange():
 @app.route("/history")
 @login_required
 def history():
-    """Show history of transactions."""
+    """Show history of search results."""
+    
     histories = db.execute("SELECT * from histories WHERE id=:id", id=session["user_id"])
     
     return render_template("history.html", histories=histories)
