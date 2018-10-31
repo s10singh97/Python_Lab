@@ -1,6 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, url_for, send_file
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
+from cs50 import SQL
 from tempfile import gettempdir
 
 import helpers
@@ -23,6 +24,9 @@ app.config["SESSION_FILE_DIR"] = gettempdir()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+# configure CS50 Library to use SQLite database
+db = SQL("sqlite:///sentiments.db")
 
 @app.route("/")
 @login_required
@@ -58,6 +62,12 @@ def search():
 
     # generate chart
     chart = helpers.chart(positive, negative, neutral)
+
+    # Insert data into histories table
+    db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral) \
+                    VALUES(:id, :screenname, :positive, :negative, :neutral)", \
+                    screenname=screen_name, positive=positive, negative=negative, \
+                    neutral=neutral, id=session["user_id"])
 
     # render results
     return render_template("search.html", chart=chart, screen_name=screen_name)
@@ -148,3 +158,30 @@ def register():
     
     else:
         return render_template("register.html")
+
+
+@app.route("/passwordchange", methods=["GET", "POST"])
+@login_required
+def passwordchange():
+    if request.method == "POST":
+
+        # ensure password was submitted
+        if not request.form.get("password"):
+            return apology("Must provide password")
+
+        # ensure new password was submitted
+        elif not request.form.get("newpassword"):
+            return apology("Must provide new password")
+        # ensure password and verified password is the same
+        elif request.form.get("newpassword") != request.form.get("newpasswordretype"):
+            return apology("password doesn't match")
+
+        db.execute("UPDATE users SET hash=:hash WHERE id=:id", \
+                hash=pwd_context.hash(request.form.get("newpassword")), id=session["user_id"])
+
+        flash("Changed!")
+
+        return redirect(url_for("index"))
+
+    else:
+        return render_template("passwordchange.html")
