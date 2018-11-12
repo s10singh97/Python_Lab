@@ -77,10 +77,11 @@ def get_user_timeline(screen_name, count=200):
     try:
         twitter = Twython(API_KEY, API_SECRET)
         user = twitter.lookup_user(screen_name=screen_name.lstrip("@"))
+        photo = twitter.show_user(screen_name=screen_name.lstrip("@"))
         if user[0]["protected"]:
             return None
         tweets = twitter.get_user_timeline(screen_name=screen_name, count=count)
-        return [html.unescape(tweet["text"].replace("\n", " ")) for tweet in tweets]
+        return [html.unescape(tweet["text"].replace("\n", " ")) for tweet in tweets], photo['profile_image_url']
     except TwythonAuthError:
         raise RuntimeError("invalid API_KEY and/or API_SECRET") from None
     except TwythonRateLimitError:
