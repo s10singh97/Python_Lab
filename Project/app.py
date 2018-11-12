@@ -48,7 +48,7 @@ def search():
         return redirect(url_for("index"))
 
     # get screen_name's tweets
-    tweets = helpers.get_user_timeline(screen_name, 100)
+    tweets, photo = helpers.get_user_timeline(screen_name, 100)
 
     if tweets == None:
         return redirect(url_for("index"))
@@ -74,7 +74,7 @@ def search():
                     neutral=neutral, id=session["user_id"])
 
     # render results
-    return render_template("search.html", chart=chart, screen_name=screen_name)
+    return render_template("search.html", chart=chart, screen_name=screen_name, photo=photo)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -201,3 +201,25 @@ def history():
     histories = db.execute("SELECT * from histories WHERE id=:id", id=session["user_id"])
     
     return render_template("history.html", histories=histories)
+
+
+@app.route("/emojis")
+@login_required
+def emojis():
+    """Individual word checking tool"""
+
+    # ensure a word was entered
+    if not request.form.get("word"):
+        return apology("Must provide word")
+
+    # absolute paths to lists
+    positives = os.path.join(sys.path[0], "positive-words.txt")
+    negatives = os.path.join(sys.path[0], "negative-words.txt")
+
+    # instantiate analyzer
+    analyzer = Analyzer(positives, negatives)
+
+    # analyze word
+    score = analyzer.analyze(request.form.get("word"))
+
+    return render_template("emojis.html", status=score)
