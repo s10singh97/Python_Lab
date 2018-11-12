@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block subtext %}
-@{{ screen_name }}
+@{{ screen_name }}&nbsp;<img src = "{{ photo }}" alt = "{{ screen_name }} + .jpg" />
 {% endblock %}
 
 {% block main %}
-{{ chart | safe }}
+<div>{{ chart | safe }}</div>
 {% endblock %}
