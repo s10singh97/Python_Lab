@@ -5,6 +5,7 @@ from cs50 import SQL
 from tempfile import gettempdir
 
 import helpers
+import sys
 from helpers import *
 from analyzer import Analyzer
 
@@ -126,6 +127,7 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
@@ -203,13 +205,21 @@ def history():
     return render_template("history.html", histories=histories)
 
 
+@app.route("/emojiinitial")
+@login_required
+def emojiinitial():
+    """Initial Word Checker Page"""
+
+    return render_template("emojiinitial.html")
+
+
 @app.route("/emojis")
 @login_required
 def emojis():
     """Individual word checking tool"""
 
     # ensure a word was entered
-    if not request.form.get("word"):
+    if not request.args.get("word"):
         return apology("Must provide word")
 
     # absolute paths to lists
@@ -220,6 +230,6 @@ def emojis():
     analyzer = Analyzer(positives, negatives)
 
     # analyze word
-    score = analyzer.analyze(request.form.get("word"))
+    score = analyzer.analyze(request.args.get("word"))
 
     return render_template("emojis.html", status=score)
