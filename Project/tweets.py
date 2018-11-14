@@ -16,7 +16,7 @@ app = sys.argv[1]
 positives = os.path.join(sys.path[0], "positive-words.txt")
 negatives = os.path.join(sys.path[0], "negative-words.txt")
 
-tweets = helpers.get_user_timeline(app, 50)
+tweets, photo = helpers.get_user_timeline(app, 50)
 
 if tweets == None:
     sys.exit("Error, unable to access user's tweets")
@@ -25,9 +25,11 @@ if tweets == None:
 analyzer = Analyzer(positives, negatives)
 
 # analyze word
+i = 1
 for tweet in tweets:
     c = analyzer.analyze(tweet)
-    print(tweet, end=" ")
+    print(str(i) + "." + "\t" + tweet, end=" ")
+    i += 1
     if c > 0:
         cprint(":)", "green")
     elif c < 0:
