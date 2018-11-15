@@ -49,14 +49,16 @@ def search():
         return redirect(url_for("index"))
 
     # get screen_name's tweets
-    tweets, photo = helpers.get_user_timeline(screen_name, 100)
+    tweets, photo = helpers.get_user_timeline(screen_name, 200)
+    tweets1 = tweets[0:99]
+    tweets2 = tweets[100:199]
 
     if tweets == None:
         return redirect(url_for("index"))
 
     positive, negative, neutral = 0.0, 0.0, 100.0
     analyzer = Analyzer(positive, negative)
-    for tweet in tweets:
+    for tweet in tweets1:
         c = analyzer.analyze(tweet)
         if c > 0:
             positive += 1
@@ -65,14 +67,43 @@ def search():
             negative += 1
             neutral -= 1
 
+
+    positive2, negative2, neutral2 = 0.0, 0.0, 100.0
+    analyzer2 = Analyzer(positive, negative)
+    for tweet in tweets2:
+        c2 = analyzer2.analyze(tweet)
+        if c2 > 0:
+            positive2 += 1
+            neutral2 -= 1
+        elif c2 < 0:
+            negative2 += 1
+            neutral2 -= 1
+
+    if positive2 > positive:
+        # Insert data into histories table
+        db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral, flag) \
+                        VALUES(:id, :screenname, :positive, :negative, :neutral, :flag)", \
+                        screenname=screen_name, positive=positive, negative=negative, \
+                        neutral=neutral, id=session["user_id"], flag="static/pos.png")
+
+    elif positive2 < positive:
+        # Insert data into histories table
+        db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral, flag) \
+                        VALUES(:id, :screenname, :positive, :negative, :neutral, :flag)", \
+                        screenname=screen_name, positive=positive, negative=negative, \
+                        neutral=neutral, id=session["user_id"], flag="static/neg.png")
+
+    else:
+       # Insert data into histories table
+        db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral, flag) \
+                        VALUES(:id, :screenname, :positive, :negative, :neutral, :flag)", \
+                        screenname=screen_name, positive=positive, negative=negative, \
+                        neutral=neutral, id=session["user_id"], flag="static/neu.png")
+
     # generate chart
     chart = helpers.chart(positive, negative, neutral)
 
-    # Insert data into histories table
-    db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral) \
-                    VALUES(:id, :screenname, :positive, :negative, :neutral)", \
-                    screenname=screen_name, positive=positive, negative=negative, \
-                    neutral=neutral, id=session["user_id"])
+    
 
     # render results
     return render_template("search.html", chart=chart, screen_name=screen_name, photo=photo)
