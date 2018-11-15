@@ -12,6 +12,7 @@
         <th>Negative Score</th>
         <th>Neutral Score</th>
         <th>Queried On</th>
+        <th>Change</th>
       </tr>
     {% for history in histories %}
       <tr>
@@ -20,6 +21,7 @@
         <td>{{ history.negative }}</td>
         <td>{{ history.neutral }}</td> 
         <td>{{ history.transacted }}</td>
+        <td><img src = "{{ history.flag }}" alt=flag height="20" width="20"/></td>
       </tr>
     {% endfor %}
     </table>
