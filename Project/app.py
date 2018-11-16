@@ -79,14 +79,14 @@ def search():
             negative2 += 1
             neutral2 -= 1
 
-    if positive2 > positive:
+    if positive2 < positive:
         # Insert data into histories table
         db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral, flag) \
                         VALUES(:id, :screenname, :positive, :negative, :neutral, :flag)", \
                         screenname=screen_name, positive=positive, negative=negative, \
                         neutral=neutral, id=session["user_id"], flag="static/pos.png")
 
-    elif positive2 < positive:
+    elif positive2 > positive:
         # Insert data into histories table
         db.execute("INSERT INTO histories (id, screenname, positive, negative, neutral, flag) \
                         VALUES(:id, :screenname, :positive, :negative, :neutral, :flag)", \
